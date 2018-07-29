@@ -3,6 +3,7 @@ package com.leo.gettyimage.application
 import android.app.Application
 import android.content.Context
 import android.content.res.Resources
+import com.facebook.stetho.Stetho
 import com.leo.gettyimage.injection.component.AppComponent
 import com.leo.gettyimage.injection.component.DaggerAppComponent
 import dagger.android.support.DaggerApplication
@@ -25,12 +26,18 @@ class GettyImageApp : DaggerApplication() {
 
     init {
         instance = this
+    }
+
+    override fun onCreate() {
+        super.onCreate()
         initialize()
     }
 
     private fun initialize() {
         Timber.uprootAll()
         Timber.plant(Timber.DebugTree())
+
+        Stetho.initializeWithDefaults(this)
     }
 
 }

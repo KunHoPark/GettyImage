@@ -41,19 +41,21 @@
                 android:id="@+id/tvName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@{bleData.id}"
                 android:textColor="@color/black"
                 android:textSize="16dp"
                 android:textStyle="bold" />
-            <!--android:text="@{bleData.bleDevice.name}"-->
+
 
             <TextView
                 android:id="@+id/tvMac"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@{bleData.name}"
                 android:layout_marginTop="1dp"
                 android:textColor="@color/main_gray_text"
                 android:textSize="16dp" />
-            <!--android:text="@{bleData.bleDevice.mac}"-->
+
 
         </LinearLayout>
 

@@ -11,7 +11,9 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import javax.inject.Singleton
 
 /**
@@ -27,10 +29,21 @@ class NetworkDataModule {
     fun providesMoshi(): Moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
     @Provides
+    @Named("moshi")
     @Singleton
     fun provideRestAdapter(okHttpClient: OkHttpClient, moshi: Moshi): Retrofit {
         return Retrofit.Builder().client(okHttpClient).baseUrl(Constants.BASE_URL)
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .build()
+    }
+
+    @Provides
+    @Named("getty")
+    @Singleton
+    fun provideWebRestAdapter(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder().client(okHttpClient).baseUrl(Constants.GETTY_BASE_URL)
+                .addConverterFactory(ScalarsConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build()
     }

@@ -1,6 +1,6 @@
 package com.leo.gettyimage.ui.splash
 
-import com.leo.gettyimage.data.repository.GettyGalleryRepository
+import com.leo.gettyimage.data.repository.GettyImageRepository
 import com.leo.gettyimage.injection.scope.ActivityScoped
 import com.leo.gettyimage.injection.scope.FragmentScoped
 import dagger.Module
@@ -18,7 +18,7 @@ abstract class SplashModule {
     companion object {
         @Provides
         @ActivityScoped
-        @JvmStatic fun provideViewModelFactory(mainRepository: GettyGalleryRepository) : SplashViewModelFactory
+        @JvmStatic fun provideViewModelFactory(mainRepository: GettyImageRepository) : SplashViewModelFactory
                 = SplashViewModelFactory(mainRepository)
     }
 

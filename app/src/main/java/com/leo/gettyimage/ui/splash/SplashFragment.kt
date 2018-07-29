@@ -1,5 +1,6 @@
 package com.leo.gettyimage.ui.splash
 
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +9,8 @@ import android.view.ViewGroup
 import ccom.leo.gettyimage.ui.base.BaseFragment
 import com.leo.gettyimage.databinding.SplashFragmentBinding
 import com.leo.gettyimage.injection.scope.ActivityScoped
+import com.leo.gettyimage.util.ActivityUtil
+import kotlinx.android.synthetic.main.ble_scan_fragment.*
 import javax.inject.Inject
 
 @ActivityScoped
@@ -40,6 +43,7 @@ class SplashFragment @Inject constructor() : BaseFragment() {
     }
 
     fun loadData() {
+        viewModel.loadCollections()
     }
 
     override fun onDestroy() {
@@ -54,7 +58,14 @@ class SplashFragment @Inject constructor() : BaseFragment() {
 
     private fun subscribeLiveData() {
         with(viewModel){
-
+            isLoadingSuccess.observe(this@SplashFragment, Observer<Boolean> {
+                dataLoading.visibility = View.GONE
+                if(it == true){
+                    ActivityUtil.startBleScanActivity(activity!!)
+                }else{
+                    showToast("데이타 가져오기 실패!")
+                }
+            })
         }
     }
 

@@ -15,8 +15,8 @@ class BleScanBindingViewHolder(private var binding: ItemBleScanViewHolderBinding
 
             this.setVariable(BR.bleData, bleData)
             bleData?.let {
-                this.tvMac.text = it.id
-                this.tvName.text = it.name
+//                this.tvMac.text = it.id
+//                this.tvName.text = it.name
             }
 
             listener?.let {

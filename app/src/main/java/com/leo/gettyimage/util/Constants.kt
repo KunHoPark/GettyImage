@@ -14,6 +14,7 @@ class Constants {
         const val HTTP_LOGGING_PRETTY_PRINTING_ENABLE = true
 
         const val BASE_URL = "https://api.coinmarketcap.com/v1/"
+        const val GETTY_BASE_URL = "http://www.gettyimagesgallery.com/"
         const val CONNECT_TIMEOUT_MILLISECONDS = 10000L
         const val READ_TIMEOUT_MILLISECONDS = 20000L
         const val WRITE_TIMEOUT_MILLISECONDS = 30000L
