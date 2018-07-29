@@ -5,7 +5,6 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.databinding.ObservableArrayList
-import com.leo.gettyimage.application.GettyImageApp
 import com.leo.gettyimage.data.local.GettyGalleryData
 import com.leo.gettyimage.data.repository.GettyGalleryRepository
 import com.leo.gettyimage.util.LeoLog
@@ -30,7 +29,7 @@ class BleScanViewModel
     lateinit var disposableObserver: DisposableObserver<List<GettyGalleryData>>
 
     init {
-        GettyImageApp.appComponent.inject(this)
+//        GettyImageApp.appComponent.inject(this)
     }
 
 

@@ -4,7 +4,6 @@ package com.leo.gettyimage.injection.component;
 import android.app.Application
 import com.leo.gettyimage.application.GettyImageApp
 import com.leo.gettyimage.injection.module.*
-import com.leo.gettyimage.ui.main.BleScanViewModel
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjector
@@ -41,7 +40,7 @@ interface AppComponent : AndroidInjector<GettyImageApp> {
     /**
      *  ViewModels
      */
-    fun inject(bleScanViewModel: BleScanViewModel)
+//    fun inject(bleScanViewModel: BleScanViewModel)
 
 
 
