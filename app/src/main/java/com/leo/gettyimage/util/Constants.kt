@@ -5,11 +5,11 @@ class Constants {
 
     companion object {
 
-        const val OFFSET = 12
-        const val LIMIT = 12
+        const val OFFSET = 20
+        const val LIMIT = 20
         const val START_ZERO_VALUE = "0"
         const val DATABASE_NAME = "gettygallery_db"
-        const val LIST_SCROLLING = 12
+        const val LIST_SCROLLING = 20
 
         const val HTTP_LOGGING_PRETTY_PRINTING_ENABLE = true
 

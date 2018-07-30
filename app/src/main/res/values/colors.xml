@@ -7,4 +7,10 @@
     <color name="black">#000000</color>
     <color name="main_gray_text">#7a7a7a</color>
     <color name="line">#212121</color>
+    <color name="textblack">#141414</color>
+    <color name="textsub">#a5a0a0</color>
+
+    <color name="subgray">#dadada</color>
+    <color name="random_1">#f4eed7</color>
+    <color name="random_2">#e4e5f6</color>
 </resources>

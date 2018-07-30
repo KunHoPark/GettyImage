@@ -10,4 +10,20 @@
         <item name="android:windowAnimationStyle">@android:style/Animation</item>
     </style>
 
+    <style name="SH1_BM_01" parent="@android:style/Widget.DeviceDefault.TextView">
+        <item name="android:fontFamily">@font/art_default_font_medium</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/textblack</item>
+    </style>
+    <style name="C1_BR_01" parent="@android:style/Widget.DeviceDefault.TextView">
+        <item name="android:fontFamily">@font/art_default_font_regular</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/textblack</item>
+    </style>
+    <style name="C1_GR_01" parent="@android:style/Widget.DeviceDefault.TextView">
+        <item name="android:fontFamily">@font/art_default_font_regular</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/textsub</item>
+    </style>
+
 </resources>

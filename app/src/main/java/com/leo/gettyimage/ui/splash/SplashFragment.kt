@@ -64,10 +64,12 @@ class SplashFragment @Inject constructor() : BaseFragment() {
             isLoadingSuccess.observe(this@SplashFragment, Observer<Boolean> {
                 dataLoading.visibility = View.GONE
                 if(it == true){
-                    ActivityUtil.startBleScanActivity(activity!!)
+                    ActivityUtil.startMainActivity(activity!!)
+                    activity!!.finish()
                 }else{
-                    ActivityUtil.startBleScanActivity(activity!!)
                     showToast("데이타 가져오기 실패!")
+                    ActivityUtil.startMainActivity(activity!!)
+                    activity!!.finish()
                 }
             })
         }

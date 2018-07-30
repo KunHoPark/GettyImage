@@ -1,4 +1,4 @@
-package com.konai.cryptokona.data.local
+package com.leo.gettyimage.data.local
 
 import android.arch.lifecycle.LiveData
 import android.arch.persistence.room.*
@@ -24,6 +24,9 @@ interface GettyImageDao {
 
     @Query("SELECT * FROM getty_image_table WHERE id = (:id)")
     fun getLiveGettyImageByCoinIndex(id: Int): LiveData<GettyImageEntity>
+
+    @Query("SELECT * FROM getty_image_table ORDER BY image_index limit :limit offset :offset")
+    fun queryGettyImagesRx(limit:Int, offset:Int): Flowable<List<GettyImageEntity>>
 
     @Insert
     fun insert(coinWalletEntity: GettyImageEntity)

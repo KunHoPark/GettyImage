@@ -6,26 +6,19 @@ import com.leo.gettyimage.R
 import dagger.Lazy
 import javax.inject.Inject
 
-/**
- * BleScanActivity
- * @author KunHoPark
- * @since 2018. 7. 17. AM 10:43
- **/
-class BleScanActivity : BaseActivity() {
+class MainActivity : BaseActivity() {
 
     @Inject
-    lateinit var bleScanFragmentProvider: Lazy<BleScanFragment>
+    lateinit var bleMainFragmentProvider: Lazy<MainFragment>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.ble_scan_activity)
+        setContentView(R.layout.main_activity)
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                    .replace(R.id.container, bleScanFragmentProvider.get())
+                    .replace(R.id.container, bleMainFragmentProvider.get())
                     .commitNow()
         }
-
-        title = "BLE"
     }
 
 }

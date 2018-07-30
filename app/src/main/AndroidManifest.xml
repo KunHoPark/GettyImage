@@ -24,7 +24,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.leo.gettyimage.ui.main.BleScanActivity"/>
+        <activity android:name="com.leo.gettyimage.ui.main.MainActivity"/>
+        <activity android:name="com.leo.gettyimage.ui.ble.BleScanActivity"/>
     </application>
 
 </manifest>

@@ -1,9 +1,9 @@
 package com.leo.gettyimage.data.repository
 
-import com.konai.cryptokona.data.local.GettyImageDao
-import com.konai.cryptokona.data.local.GettyImageEntity
 import com.konai.cryptox.kotlin.extension.subStringTagId
 import com.leo.gettyimage.application.GettyImageApp
+import com.leo.gettyimage.data.local.GettyImageDao
+import com.leo.gettyimage.data.local.GettyImageEntity
 import com.leo.gettyimage.data.remote.api.GettyRemoteApi
 import com.leo.gettyimage.util.LeoLog
 import com.leo.gettyimage.util.NetworkUtils
@@ -25,9 +25,16 @@ class GettyImageRepository(private val remoteApi: GettyRemoteApi, private val ge
     // Respsitory에서 처리된 결과를 ViewModel로 알려 주식 위한 Observer.
     val isLoadingFromGettySite: BehaviorSubject<List<GettyImageEntity>> = BehaviorSubject.create()
 
-    fun getCollections(isLoad: Boolean){
+    /**
+     * DB에 저장된 image 정보를 일정 갯수로 가져 온다.
+     */
+    fun getCollectionsFromDb(limit: Int, offset: Int): Flowable<List<GettyImageEntity>> {
+        return gettyImageDao.queryGettyImagesRx(limit, offset)
+    }
 
-        when(isLoad){
+    fun getCollections(isLoad: Boolean) {
+
+        when (isLoad) {
             true -> {
                 getGettyImagesFromServer()
             }
@@ -35,29 +42,27 @@ class GettyImageRepository(private val remoteApi: GettyRemoteApi, private val ge
                 // DB에서 정보를 가져 옴. 만약 DB에 정보가 없을 경우 서버를 통해 데이타를 가져 온다.
                 if (gettyImageDao.getGettyImages().isNotEmpty()) {
                     getGettyImagesFromDB()
-                }else{
+                } else {
                     getGettyImagesFromServer()
                 }
             }
         }
-
-
     }
 
     /**
      * Getty 서버로 부터 Html 정보 가져 온 후 DB에 저장 하기 위해 parserHtmlAndSave 를 호출 한다.
      */
-    private fun getGettyImagesFromServer(){
+    private fun getGettyImagesFromServer() {
 
-        if (isNetworkAvailAble()){
+        if (isNetworkAvailAble()) {
             val stringCall = remoteApi.getCollections()
-            stringCall.enqueue(object : Callback<String>{
+            stringCall.enqueue(object : Callback<String> {
                 override fun onResponse(call: Call<String>?, response: Response<String>?) {
                     LeoLog.i(tag, "getCollections onResponse response=$response")
                     response?.let {
                         LeoLog.i(tag, "getCollections onResponse response.body=${it.body()}")
                         parserHtmlAndSave(it.body())
-                                .subscribe{
+                                .subscribe {
                                     isLoadingFromGettySite.onNext(it)
                                 }
                     }
@@ -74,19 +79,20 @@ class GettyImageRepository(private val remoteApi: GettyRemoteApi, private val ge
     /**
      * Getty 사이트로부 Html 포멧을 파서 후 GettyImageEntity에 저장 한다.
      */
-    private fun parserHtmlAndSave(response: String?) : Flowable<List<GettyImageEntity>> {
+    private fun parserHtmlAndSave(response: String?): Flowable<List<GettyImageEntity>> {
 
         return Flowable.just(response)
                 .subscribeOn(Schedulers.io())
                 .map {
-                    return@map Jsoup.parse(response).select("div.gallery-item-caption p a")
-                }
-                .map {
-                    it.forEach {
-                        val id = it.attr("href").subStringTagId("id=")
-                        val title = it.childNode(0).toString()
-                        GettyImageEntity(id, title, "", "").apply {
-                            gettyImages.add(this)
+                    val elements = Jsoup.parse(response).select("div[class=gallery-item-group exitemrepeater]")
+                    elements?.let {
+                        it.forEachIndexed { index, it ->
+                            val thumbnailUrl =it.select("a img").attr("src")
+                            val id = it.select("div.gallery-item-caption p a").attr("href").subStringTagId("id=")
+                            val title = it.select("div.gallery-item-caption p a")[0].childNode(0).toString()
+                            GettyImageEntity(id, title, index, thumbnailUrl, "", "").apply {
+                                gettyImages.add(this)
+                            }
                         }
                     }
                     return@map gettyImages
@@ -102,11 +108,11 @@ class GettyImageRepository(private val remoteApi: GettyRemoteApi, private val ge
     /**
      * DB(getty_image_table)로 부터 GettyImageEntity 정보 가져 오기
      */
-    private fun getGettyImagesFromDB(){
+    private fun getGettyImagesFromDB() {
         gettyImageDao.getGettyImagesRx()
                 .subscribeOn(Schedulers.io())
-                .subscribe{
-                    when(it.isNotEmpty()){
+                .subscribe {
+                    when (it.isNotEmpty()) {
                         true -> {
                             isLoadingFromGettySite.onNext(it)
                         }
@@ -121,17 +127,15 @@ class GettyImageRepository(private val remoteApi: GettyRemoteApi, private val ge
     /**
      * 네트워크 연결 상태 확인. 만약 미 연결되어 있으면 Exception 처리 한다.
      */
-    private fun isNetworkAvailAble(): Boolean{
+    private fun isNetworkAvailAble(): Boolean {
         if (NetworkUtils.isNetworkAvailable(GettyImageApp.applicationContext())) {
             return true
-        }else{
+        } else {
             isLoadingFromGettySite.onError(throw IOException("Network connection fail"))
         }
 
         return false
     }
-
-
 
 
 }

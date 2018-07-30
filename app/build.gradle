@@ -77,13 +77,18 @@ dependencies {
     // Jsoup
     implementation 'org.jsoup:jsoup:1.10.2'
 
-    //moshi
-    implementation "com.squareup.moshi:moshi-kotlin:1.5.0"
-    implementation "com.squareup.moshi:moshi-adapters:1.5.0"
+    // Glide
+    kapt 'com.github.bumptech.glide:compiler:4.6.1'
+    compile 'com.github.bumptech.glide:okhttp3-integration:4.6.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.6.1'
 
     // Steho
     implementation 'com.facebook.stetho:stetho:1.5.0'
 
     //Log
     implementation 'com.jakewharton.timber:timber:4.4.0'
+
+    //moshi
+    implementation "com.squareup.moshi:moshi-kotlin:1.5.0"
+    implementation "com.squareup.moshi:moshi-adapters:1.5.0"
 }
