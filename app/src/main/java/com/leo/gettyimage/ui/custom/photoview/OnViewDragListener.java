@@ -1,4 +1,4 @@
-package com.leo.gettyimage.ui.photoview;
+package com.leo.gettyimage.ui.custom.photoview;
 
 /**
  * Interface definition for a callback to be invoked when the photo is experiencing a drag event

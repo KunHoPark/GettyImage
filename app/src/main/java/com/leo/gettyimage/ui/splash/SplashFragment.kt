@@ -34,7 +34,7 @@ class SplashFragment @Inject constructor() : BaseFragment() {
 
         viewDataBinding.run {
             this.viewModel = viewModel
-
+            setLifecycleOwner(activity)
         }
 
         subscribeLiveData()

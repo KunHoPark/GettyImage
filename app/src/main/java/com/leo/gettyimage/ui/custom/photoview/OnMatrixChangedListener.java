@@ -1,4 +1,4 @@
-package com.leo.gettyimage.ui.photoview;
+package com.leo.gettyimage.ui.custom.photoview;
 
 import android.graphics.RectF;
 

@@ -25,6 +25,7 @@
         </activity>
 
         <activity android:name="com.leo.gettyimage.ui.main.MainActivity"/>
+        <activity android:name="com.leo.gettyimage.ui.viewer.PhotoActivity"/>
         <activity android:name="com.leo.gettyimage.ui.ble.BleScanActivity"/>
     </application>
 

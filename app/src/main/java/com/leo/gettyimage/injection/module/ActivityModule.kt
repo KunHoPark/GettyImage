@@ -7,6 +7,8 @@ import com.leo.gettyimage.ui.main.MainActivity
 import com.leo.gettyimage.ui.main.MainModule
 import com.leo.gettyimage.ui.splash.SplashActivity
 import com.leo.gettyimage.ui.splash.SplashModule
+import com.leo.gettyimage.ui.viewer.PhotoActivity
+import com.leo.gettyimage.ui.viewer.PhotoModule
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -27,5 +29,8 @@ abstract class ActivityModule {
     @ContributesAndroidInjector(modules = [(SplashModule::class)])
     abstract fun splashActivity(): SplashActivity
 
+    @ActivityScoped
+    @ContributesAndroidInjector(modules = [(PhotoModule::class)])
+    abstract fun photoActivity(): PhotoActivity
 
 }

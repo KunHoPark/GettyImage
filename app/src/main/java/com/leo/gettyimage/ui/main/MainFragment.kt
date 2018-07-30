@@ -12,8 +12,10 @@ import ccom.leo.gettyimage.adapter.GettyImageAdapter
 import ccom.leo.gettyimage.ui.base.BaseFragment
 import com.leo.gettyimage.application.Constants
 import com.leo.gettyimage.callback.OnItemClickListener
+import com.leo.gettyimage.data.local.GettyImageEntity
 import com.leo.gettyimage.databinding.MainFragmentBinding
 import com.leo.gettyimage.injection.scope.ActivityScoped
+import com.leo.gettyimage.util.ActivityUtil
 import com.leo.gettyimage.util.InfiniteScrollListener
 import kotlinx.android.synthetic.main.main_fragment.*
 import javax.inject.Inject
@@ -42,6 +44,7 @@ class MainFragment @Inject constructor() : BaseFragment() {
 
         viewDataBinding.run {
             this.mainViewModel = viewModel
+            setLifecycleOwner(activity)
 
             recyclerView?.apply {
                 val gridLayoutManager = GridLayoutManager(activity, 1)
@@ -72,7 +75,10 @@ class MainFragment @Inject constructor() : BaseFragment() {
         gettyImageAdapter?.let {
             it.setOnItemClickListener(object : OnItemClickListener {
                 override fun onItemClick(item: Object, view: View, position: Int) {
-
+                    item?.let {
+                        it as GettyImageEntity
+                        ActivityUtil.startPhotoActivity(activity!!, it.id)
+                    }
                 }
 
             })

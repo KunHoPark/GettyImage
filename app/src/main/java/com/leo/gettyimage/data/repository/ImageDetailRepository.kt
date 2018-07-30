@@ -17,7 +17,7 @@ import retrofit2.Response
 import java.io.IOException
 
 
-class GettyImageRepository(private val remoteApi: GettyRemoteApi, private val gettyImageDao: GettyImageDao) {
+class ImageDetailRepository(private val remoteApi: GettyRemoteApi, private val gettyImageDao: GettyImageDao) {
     internal val tag = this.javaClass.simpleName
 
     private val gettyImages = ArrayList<GettyImageEntity>()
@@ -32,23 +32,9 @@ class GettyImageRepository(private val remoteApi: GettyRemoteApi, private val ge
         return gettyImageDao.queryGettyImagesRx(limit, offset)
     }
 
-    fun getCollections(isLoad: Boolean) {
-
-        when (isLoad) {
-            true -> {
-                getGettyImagesFromServer()
-            }
-            else -> {
-                // DB에서 정보를 가져 옴. 만약 DB에 정보가 없을 경우 서버를 통해 데이타를 가져 온다.
-                if (gettyImageDao.getGettyImages().isNotEmpty()) {
-                    getGettyImagesFromDB()
-                } else {
-                    getGettyImagesFromServer()
-                }
-            }
-        }
+    fun getGettyImage(id: String): GettyImageEntity {
+        return gettyImageDao.getGettyImageByCoinIndex(id.toInt())
     }
-
 
     /**
      * Getty 서버로 부터 Html 정보 가져 온 후 DB에 저장 하기 위해 parserHtmlAndSave 를 호출 한다.
