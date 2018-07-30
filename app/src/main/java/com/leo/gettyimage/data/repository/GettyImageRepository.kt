@@ -17,39 +17,64 @@ import retrofit2.Response
 import java.io.IOException
 
 
-class GettyImageRepository(val remoteApi: GettyRemoteApi, val gettyImageDao: GettyImageDao) {
+class GettyImageRepository(private val remoteApi: GettyRemoteApi, private val gettyImageDao: GettyImageDao) {
     internal val tag = this.javaClass.simpleName
 
     private val gettyImages = ArrayList<GettyImageEntity>()
 
+    // Respsitory에서 처리된 결과를 ViewModel로 알려 주식 위한 Observer.
     val isLoadingFromGettySite: BehaviorSubject<List<GettyImageEntity>> = BehaviorSubject.create()
 
-    fun getCollections(){
+    fun getCollections(isLoad: Boolean){
 
-        val stringCall = remoteApi.getCollections()
-        stringCall.enqueue(object : Callback<String>{
-            override fun onResponse(call: Call<String>?, response: Response<String>?) {
-                LeoLog.i(tag, "getCollections onResponse response=$response")
-                response?.let {
-                    LeoLog.i(tag, "getCollections onResponse response.body=${it.body()}")
-                    getCollections(it.body())
-                            .subscribe{
-                                isLoadingFromGettySite.onNext(it)
-                            }
+        when(isLoad){
+            true -> {
+                getGettyImagesFromServer()
+            }
+            else -> {
+                // DB에서 정보를 가져 옴. 만약 DB에 정보가 없을 경우 서버를 통해 데이타를 가져 온다.
+                if (gettyImageDao.getGettyImages().isNotEmpty()) {
+                    getGettyImagesFromDB()
+                }else{
+                    getGettyImagesFromServer()
                 }
             }
+        }
 
-            override fun onFailure(call: Call<String>?, t: Throwable?) {
-                LeoLog.e(tag, t!!.localizedMessage)
-                isLoadingFromGettySite.onError(throw IOException("Load data fail"))
-            }
-        })
+
+    }
+
+    /**
+     * Getty 서버로 부터 Html 정보 가져 온 후 DB에 저장 하기 위해 parserHtmlAndSave 를 호출 한다.
+     */
+    private fun getGettyImagesFromServer(){
+
+        if (isNetworkAvailAble()){
+            val stringCall = remoteApi.getCollections()
+            stringCall.enqueue(object : Callback<String>{
+                override fun onResponse(call: Call<String>?, response: Response<String>?) {
+                    LeoLog.i(tag, "getCollections onResponse response=$response")
+                    response?.let {
+                        LeoLog.i(tag, "getCollections onResponse response.body=${it.body()}")
+                        parserHtmlAndSave(it.body())
+                                .subscribe{
+                                    isLoadingFromGettySite.onNext(it)
+                                }
+                    }
+                }
+
+                override fun onFailure(call: Call<String>?, t: Throwable?) {
+                    LeoLog.e(tag, t!!.localizedMessage)
+                    isLoadingFromGettySite.onError(throw IOException("Load data fail"))
+                }
+            })
+        }
     }
 
     /**
      * Getty 사이트로부 Html 포멧을 파서 후 GettyImageEntity에 저장 한다.
      */
-    private fun getCollections(response: String?) : Flowable<List<GettyImageEntity>> {
+    private fun parserHtmlAndSave(response: String?) : Flowable<List<GettyImageEntity>> {
 
         return Flowable.just(response)
                 .subscribeOn(Schedulers.io())
@@ -60,57 +85,49 @@ class GettyImageRepository(val remoteApi: GettyRemoteApi, val gettyImageDao: Get
                     it.forEach {
                         val id = it.attr("href").subStringTagId("id=")
                         val title = it.childNode(0).toString()
-
-                        val item = GettyImageEntity(id, title, "", "")
-                        gettyImages.add(item)
+                        GettyImageEntity(id, title, "", "").apply {
+                            gettyImages.add(this)
+                        }
                     }
                     return@map gettyImages
                 }
+                .map {
+                    gettyImageDao.replaceAll(it)
+                }
                 .flatMap {
-                    gettyImageDao.insertAll(it)
                     return@flatMap gettyImageDao.getGettyImagesRx().subscribeOn(Schedulers.io())
                 }
     }
 
+    /**
+     * DB(getty_image_table)로 부터 GettyImageEntity 정보 가져 오기
+     */
+    private fun getGettyImagesFromDB(){
+        gettyImageDao.getGettyImagesRx()
+                .subscribeOn(Schedulers.io())
+                .subscribe{
+                    when(it.isNotEmpty()){
+                        true -> {
+                            isLoadingFromGettySite.onNext(it)
+                        }
+                        else -> {
+                            isLoadingFromGettySite.onError(throw IOException("Load data fail"))
+                        }
+                    }
 
-//    fun getCryptocurrencies(limit: Int, offset: Int): Observable<List<GettyGalleryData>> {
-//        var observableFromApi: Observable<List<GettyGalleryData>>? = null
-//
-//        if (isLoadFromServer(offset)){
-//            observableFromApi = getCryptocurrenciesFromApi()
-//        }
-//        val observableFromDb = getCryptocurrenciesFromDb(limit, offset)
-//
-//        return if (isLoadFromServer(offset)) {
-//            Observable.concatArrayEager(observableFromApi, observableFromDb)
-//        }else {
-//            observableFromDb
-//        }
-//    }
+                }
+    }
 
-//    private fun getCryptocurrenciesFromApi(): Observable<List<GettyGalleryData>> {
-//        return apiInterface.getGettyGalleries(Constants.START_ZERO_VALUE)
-//                .doOnNext {
-//                    Log.e("REPOSITORY API * ", it.size.toString())
-//                    for (item in it) {
-//                        gettyGalleryDao.insertGettyGalleryData(item)
-//                    }
-//                }
-//    }
-//
-//    private fun getCryptocurrenciesFromDb(limit: Int, offset: Int): Observable<List<GettyGalleryData>> {
-//        return gettyGalleryDao.queryGettyGalleriesData(limit, offset)
-//                .toObservable()
-//                .doOnNext {
-//                    //Print log it.size :)
-//                    Log.e("REPOSITORY DB *** ", it.size.toString())
-//                }
-//    }
-
-    private fun isLoadFromServer(offset: Int): Boolean{
-        if (NetworkUtils.isNetworkAvailable(GettyImageApp.applicationContext()) && offset==0) {
+    /**
+     * 네트워크 연결 상태 확인. 만약 미 연결되어 있으면 Exception 처리 한다.
+     */
+    private fun isNetworkAvailAble(): Boolean{
+        if (NetworkUtils.isNetworkAvailable(GettyImageApp.applicationContext())) {
             return true
+        }else{
+            isLoadingFromGettySite.onError(throw IOException("Network connection fail"))
         }
+
         return false
     }
 

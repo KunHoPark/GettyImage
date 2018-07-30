@@ -48,6 +48,9 @@ class SplashFragment @Inject constructor() : BaseFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+        with(viewModel){
+            disposeElements()
+        }
     }
 
 
@@ -63,11 +66,13 @@ class SplashFragment @Inject constructor() : BaseFragment() {
                 if(it == true){
                     ActivityUtil.startBleScanActivity(activity!!)
                 }else{
+                    ActivityUtil.startBleScanActivity(activity!!)
                     showToast("데이타 가져오기 실패!")
                 }
             })
         }
     }
+
 
 
 }

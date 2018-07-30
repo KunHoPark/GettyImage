@@ -31,6 +31,12 @@ interface GettyImageDao {
     @Insert
     fun insertAll(coinWalletEntities: List<GettyImageEntity>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun replaceAll(gettyImages: List<GettyImageEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun replace(gettyImage: GettyImageEntity)
+
     @Delete
     fun delete(coinWalletEntity: GettyImageEntity)
 

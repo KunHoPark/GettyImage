@@ -11,22 +11,22 @@ class GettyImageEntity(
         /**
          *  PrimaryKey
          */
-        @PrimaryKey @ColumnInfo(name = "id") val id: String,
+        @PrimaryKey @ColumnInfo(name = "id") var id: String,
 
         /**
          *  Title
          */
-        @ColumnInfo(name = "title") val title: String,
+        @ColumnInfo(name = "title") var title: String,
 
         /**
          * Detail description.
          */
-        @ColumnInfo(name = "description") val description: String,
+        @ColumnInfo(name = "description") var description: String,
 
         /**
          * Reference count
          */
-        @ColumnInfo(name = "ref_count") val RefCount: String) {
+        @ColumnInfo(name = "ref_count") var RefCount: String) {
 
 }
 
