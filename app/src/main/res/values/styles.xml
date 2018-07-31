@@ -40,5 +40,10 @@
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/textsub</item>
     </style>
+    <style name="D1_BB_01" parent="@android:style/Widget.DeviceDefault.TextView">
+        <item name="android:fontFamily">@font/art_default_font_bold</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:textColor">@color/textblack</item>
+    </style>
 
 </resources>
