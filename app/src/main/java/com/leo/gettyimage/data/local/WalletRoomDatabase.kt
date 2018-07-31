@@ -4,13 +4,11 @@ import android.arch.persistence.room.Database
 import android.arch.persistence.room.RoomDatabase
 
 @Database(entities = [
-    GettyImageEntity::class,
-    GettyGalleryData::class]
+    GettyImageEntity::class]
         , version = 1)
 
 abstract class WalletRoomDatabase : RoomDatabase() {
 
     abstract fun gettyImageDao(): GettyImageDao
-    abstract fun gettyGalleryDao(): GettyGalleryDao
 
 }

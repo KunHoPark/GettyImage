@@ -11,6 +11,7 @@ import javax.inject.Inject
 class MainActivity : BaseActivity() {
     internal val tag = this.javaClass.simpleName
 
+    //ActivitySubComponent(MainModule) 의존성 요청
     @Inject
     lateinit var bleMainFragmentProvider: Lazy<MainFragment>
 

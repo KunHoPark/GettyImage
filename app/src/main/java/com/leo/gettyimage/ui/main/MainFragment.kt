@@ -22,6 +22,7 @@ import com.leo.gettyimage.util.InfiniteScrollListener
 import kotlinx.android.synthetic.main.main_fragment.*
 import javax.inject.Inject
 
+// ViewFactory 타입의 의존성은 FragmentModule이 없으므로 부모인 ActivitySubComponent를 검색하여 MainModule에서 생성한다.
 @ActivityScoped
 class MainFragment @Inject constructor() : BaseFragment() {
     internal val tag = this.javaClass.simpleName

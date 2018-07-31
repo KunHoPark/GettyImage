@@ -45,7 +45,7 @@
                 android:maxLines="2"
                 android:ellipsize="end"
                 style="@style/SH1_BM_01"
-                android:text="@{String.valueOf(gettyImageEntity.imageIndex)}"
+                android:text="@{String.valueOf(gettyImageEntity.title)}"
                 />
 
             <TextView

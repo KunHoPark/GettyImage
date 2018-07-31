@@ -14,10 +14,11 @@ import javax.inject.Named
 import javax.inject.Singleton
 
 /**
-* NetworkDataModule
-* @author JungWoongLee
-* @since 2018. 6. 8. PM 1:32
-**/
+ * NetworkDataModule
+ * AppComponent에 연결 된다.
+ * @author KunHoPark
+ * @since 2018. 7. 30. PM 2:07
+ **/
 @Module
 class NetworkDataModule {
 

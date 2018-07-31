@@ -21,7 +21,7 @@ class PicassoUtil {
 
     companion object {
 
-        // for Network Images
+        // 썹네일 이미지 출력
         @JvmStatic fun loadImage(context: Context, imageUrl: String?, imageView: ImageView) {
             Picasso.with(context)
                     .load(imageUrl)
@@ -30,6 +30,7 @@ class PicassoUtil {
                     .into(imageView)
         }
 
+        // 오리지널 이미지 출력.
         @JvmStatic fun loadImage(context: Context, thumbNailImageUrl: String?, originalImageUrl: String?, imageView: ImageView) {
             Picasso.with(context)
                     .load(thumbNailImageUrl)

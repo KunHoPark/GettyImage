@@ -47,7 +47,7 @@ class CustomGestureDetector {
         mTouchSlop = configuration.getScaledTouchSlop();
 
         mListener = listener;
-        ScaleGestureDetector.OnScaleGestureListener mScaleListener = new ScaleGestureDetector.OnScaleGestureListener() {
+        ScaleGestureDetector.OnScaleGestureListener mScaleListener = new ScaleGestureDetector.OnScaleGestureListener() {    //핀치 줌 지원
 
             @Override
             public boolean onScale(ScaleGestureDetector detector) {
@@ -108,13 +108,14 @@ class CustomGestureDetector {
         }
     }
 
+    // 이미지의 drag
     private boolean processTouchEvent(MotionEvent ev) {
         final int action = ev.getAction();
         switch (action & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
                 mActivePointerId = ev.getPointerId(0);
 
-                mVelocityTracker = VelocityTracker.obtain();
+                mVelocityTracker = VelocityTracker.obtain();            //드래그의 속도 측정 관련.
                 if (null != mVelocityTracker) {
                     mVelocityTracker.addMovement(ev);
                 }

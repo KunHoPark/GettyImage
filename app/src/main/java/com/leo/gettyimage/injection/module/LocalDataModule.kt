@@ -9,8 +9,9 @@ import javax.inject.Singleton
 
 /**
 * LocalDataModule
-* @author JungWoongLee
-* @since 2018. 6. 18. PM 2:07
+ * AppComponent에 연결 된다.
+* @author KunHoPark
+* @since 2018. 7. 30. PM 2:07
 **/
 @Module
 class LocalDataModule {

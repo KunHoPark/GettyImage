@@ -9,6 +9,9 @@ import com.leo.gettyimage.injection.component.DaggerAppComponent
 import dagger.android.support.DaggerApplication
 import timber.log.Timber
 
+/**
+ * DaggerApplication를 상속받고, AppComponent에서 정의한 Builder를 활용하여 Component와 연결 한다.
+ */
 class GettyImageApp : DaggerApplication() {
     companion object {
         val appComponent: AppComponent by lazy { DaggerAppComponent.builder()

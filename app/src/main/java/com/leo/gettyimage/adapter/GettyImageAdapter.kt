@@ -10,9 +10,9 @@ import com.leo.gettyimage.databinding.ItemGettyImageViewHolderBinding
 import com.leo.gettyimage.util.LeoLog
 
 /**
- * BleScanAdapter
+ * GettyImageAdapter
  * @author KunHoPark
- * @since 2018. 7. 17. AM 10:43
+ * @since 2018. 7. 29. AM 10:43
  **/
 class GettyImageAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     internal val tag = this.javaClass.simpleName
