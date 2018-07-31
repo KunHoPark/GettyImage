@@ -4,6 +4,7 @@ package com.leo.gettyimage.ui.main
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.databinding.ObservableArrayList
+import com.leo.gettyimage.callback.OnLoadListener
 import com.leo.gettyimage.data.local.GettyImageEntity
 import com.leo.gettyimage.data.repository.GettyImageRepository
 import com.leo.gettyimage.util.LeoLog
@@ -12,7 +13,7 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class MainViewModel
-@Inject constructor(val mainRepository: GettyImageRepository) : ViewModel() {
+@Inject constructor(private val gettyImageRepository: GettyImageRepository) : ViewModel() {
     internal val tag = this.javaClass.simpleName
 
     private var compositeDisposable = CompositeDisposable()
@@ -20,36 +21,33 @@ class MainViewModel
 
     val gettyImages= ObservableArrayList<GettyImageEntity>()
 
-    init {
-//        GettyImageApp.appComponent.inject(this)
-    }
-
     fun loadCollections() {
-        mainRepository.getCollections(true)                 //Getty site로 부터 파서 후 이미지 정보 가져 오기.
-        mainRepository.isLoadingFromGettySite                      //가져온 이미지 정보를 DB에 저장 하기.
-                .subscribeOn(Schedulers.io())
-                .subscribe(
-                        {
-                            isLoadingSuccess.postValue(true)
-                        },
-                        {
-                            isLoadingSuccess.postValue(false)
-                            LeoLog.e(tag, it.localizedMessage)
-                        }
-                )
-                .also {
-                    compositeDisposable.add(it)
-                }
+        gettyImageRepository.getCollections(true, object: OnLoadListener{
+            override fun onSuccess(gettyImageEntity: List<GettyImageEntity>?) {
+                isLoadingSuccess.postValue(true)
+            }
+
+            override fun onFail(error: String?) {
+                isLoadingSuccess.postValue(false)
+                LeoLog.e(tag, error!!)
+            }
+        })                 //Getty site로 부터 파서 후 이미지 정보 가져 오기.
     }
 
-    fun loadCollections(limit: Int, offset: Int) {
+    fun loadCollections(limit: Int, offset: Int, isOverWrite: Boolean) {
         LeoLog.i(tag, "loadCryptocurrencies limit=$limit , offset=$offset")
-        mainRepository.getCollectionsFromDb(limit, offset)
+        gettyImageRepository.getCollectionsFromDb(limit, offset)
                 .subscribeOn(Schedulers.io())
                 .subscribe(
                         {
                             isLoadingSuccess.postValue(true)
-                            gettyImages += it
+                            when(isOverWrite){
+                                true -> {
+                                    gettyImages.removeAll(gettyImages)
+                                    gettyImages.addAll(it)
+                                }
+                                else -> gettyImages += it
+                            }
                         },
                         {
                             isLoadingSuccess.postValue(false)

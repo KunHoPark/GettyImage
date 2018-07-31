@@ -1,7 +1,9 @@
 package com.leo.gettyimage.ui.main
 
+import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
@@ -61,23 +63,29 @@ class MainFragment @Inject constructor() : BaseFragment() {
     }
 
     private fun loadData() {
-        viewModel.loadCollections(Constants.LIMIT, currentPage++ * Constants.OFFSET)
+        viewModel.loadCollections(Constants.LIMIT, currentPage * Constants.OFFSET, false)
+        currentPage++
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onPause() {
+        super.onPause()
         with(viewModel){
             disposeElements()
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+    }
+
     override fun initClickListener() {
         gettyImageAdapter?.let {
             it.setOnItemClickListener(object : OnItemClickListener {
+
                 override fun onItemClick(item: Object, view: View, position: Int) {
                     item?.let {
                         it as GettyImageEntity
-                        ActivityUtil.startPhotoActivity(activity!!, it.id)
+                        ActivityUtil.startPhotoActivityForResult(this@MainFragment, it.id, 100)
                     }
                 }
 
@@ -90,16 +98,23 @@ class MainFragment @Inject constructor() : BaseFragment() {
         with(viewModel){
             isLoadingSuccess.observe(this@MainFragment, Observer<Boolean> {
                 dataLoading.visibility = View.GONE
-                if(it == true){
-//                    ActivityUtil.startBleScanActivity(activity!!)
-                }else{
-//                    ActivityUtil.startBleScanActivity(activity!!)
-                    showToast("데이타 가져오기 실패!")
+                if(it == false){
+                    showToast("이미지 정보를 가져 오는데 실패 하였습니다.")
                 }
             })
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        //Refresh list
+        when (resultCode) {
+            Activity.RESULT_OK -> {
+                viewModel.loadCollections(viewModel.gettyImages.size, 0, true)
+            }
+        }
+    }
 
 
 }

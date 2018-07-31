@@ -6,20 +6,10 @@ import android.support.v7.widget.RecyclerView
 import android.widget.ImageView
 import com.konai.cryptox.kotlin.extension.toImageUrlForThumbnail
 import com.leo.gettyimage.application.GettyImageApp
-import com.leo.gettyimage.data.local.GettyGalleryData
 import com.leo.gettyimage.data.local.GettyImageEntity
-import com.leo.gettyimage.util.GlideImageUtils
+import com.leo.gettyimage.util.PicassoUtil
 
 object AdapterBindings {
-
-    @BindingAdapter("bleDataItems")
-    @JvmStatic
-    fun setBleDataItems(recyclerView: RecyclerView, bleDatas: ObservableArrayList<GettyGalleryData>) {
-        val adapter = recyclerView.adapter as BleScanAdapter
-        if (adapter != null) {
-            adapter!!.addItems(bleDatas)
-        }
-    }
 
     @BindingAdapter("gettyImageItems")
     @JvmStatic
@@ -32,8 +22,8 @@ object AdapterBindings {
 
     @BindingAdapter("loadImage")
     @JvmStatic
-    fun setLoadImage(imageView: ImageView, imageUrl: String) {
-        GlideImageUtils.loadImage(GettyImageApp.applicationContext(), imageUrl.toImageUrlForThumbnail(), imageView)
+    fun setLoadImage(imageView: ImageView, item: GettyImageEntity) {
+        PicassoUtil.loadImage(GettyImageApp.applicationContext(), item.thumbnailUrl.toImageUrlForThumbnail(), item.originalImgUrl.toImageUrlForThumbnail(), imageView)
     }
 
 }

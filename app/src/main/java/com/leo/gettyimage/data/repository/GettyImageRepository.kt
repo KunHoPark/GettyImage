@@ -2,6 +2,7 @@ package com.leo.gettyimage.data.repository
 
 import com.konai.cryptox.kotlin.extension.subStringTagId
 import com.leo.gettyimage.application.GettyImageApp
+import com.leo.gettyimage.callback.OnLoadListener
 import com.leo.gettyimage.data.local.GettyImageDao
 import com.leo.gettyimage.data.local.GettyImageEntity
 import com.leo.gettyimage.data.remote.api.GettyRemoteApi
@@ -9,12 +10,10 @@ import com.leo.gettyimage.util.LeoLog
 import com.leo.gettyimage.util.NetworkUtils
 import io.reactivex.Flowable
 import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.BehaviorSubject
 import org.jsoup.Jsoup
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.IOException
 
 
 class GettyImageRepository(private val remoteApi: GettyRemoteApi, private val gettyImageDao: GettyImageDao) {
@@ -22,8 +21,8 @@ class GettyImageRepository(private val remoteApi: GettyRemoteApi, private val ge
 
     private val gettyImages = ArrayList<GettyImageEntity>()
 
-    // Respsitory에서 처리된 결과를 ViewModel로 알려 주식 위한 Observer.
-    val isLoadingFromGettySite: BehaviorSubject<List<GettyImageEntity>> = BehaviorSubject.create()
+    // Respsitory에서 처리된 결과를 ViewModel로 알려 주기 위한 리스너.
+    lateinit var onLoadListener: OnLoadListener
 
     /**
      * DB에 저장된 image 정보를 일정 갯수로 가져 온다.
@@ -32,7 +31,8 @@ class GettyImageRepository(private val remoteApi: GettyRemoteApi, private val ge
         return gettyImageDao.queryGettyImagesRx(limit, offset)
     }
 
-    fun getCollections(isLoad: Boolean) {
+    fun getCollections(isLoad: Boolean, onLoadListener: OnLoadListener) {
+        this.onLoadListener = onLoadListener
 
         when (isLoad) {
             true -> {
@@ -64,14 +64,14 @@ class GettyImageRepository(private val remoteApi: GettyRemoteApi, private val ge
                         LeoLog.i(tag, "getCollections onResponse response.body=${it.body()}")
                         parserHtmlAndSave(it.body())
                                 .subscribe {
-                                    isLoadingFromGettySite.onNext(it)
+                                    onLoadListener.onSuccess(null)
                                 }
                     }
                 }
 
                 override fun onFailure(call: Call<String>?, t: Throwable?) {
                     LeoLog.e(tag, t!!.localizedMessage)
-                    isLoadingFromGettySite.onError(throw IOException("Load data fail"))
+                    onLoadListener.onFail("Load data fail")
                 }
             })
         }
@@ -91,7 +91,9 @@ class GettyImageRepository(private val remoteApi: GettyRemoteApi, private val ge
                             val thumbnailUrl =it.select("a img").attr("src")
                             val id = it.select("div.gallery-item-caption p a").attr("href").subStringTagId("id=")
                             val title = it.select("div.gallery-item-caption p a")[0].childNode(0).toString()
-                            GettyImageEntity(id, title, index, thumbnailUrl, "", "").apply {
+
+                            //thumbnailUrl과 originalImgUrl를 동일한 값으로 처리 한다. 상세 페이지 들어 갈 때 originalImageUrl로 표현 후 서버를 통해 다시 그린다.
+                            GettyImageEntity(id, title, index, thumbnailUrl, thumbnailUrl, "", "").apply {
                                 gettyImages.add(this)
                             }
                         }
@@ -115,10 +117,10 @@ class GettyImageRepository(private val remoteApi: GettyRemoteApi, private val ge
                 .subscribe {
                     when (it.isNotEmpty()) {
                         true -> {
-                            isLoadingFromGettySite.onNext(it)
+                            onLoadListener.onSuccess(it)
                         }
                         else -> {
-                            isLoadingFromGettySite.onError(throw IOException("Load data fail"))
+                            onLoadListener.onFail("Load data fail")
                         }
                     }
 
@@ -132,7 +134,7 @@ class GettyImageRepository(private val remoteApi: GettyRemoteApi, private val ge
         if (NetworkUtils.isNetworkAvailable(GettyImageApp.applicationContext())) {
             return true
         } else {
-            isLoadingFromGettySite.onError(throw IOException("Network connection fail"))
+            onLoadListener.onFail("Network connection fail")
         }
 
         return false

@@ -10,7 +10,7 @@ import ccom.leo.gettyimage.ui.base.BaseFragment
 import com.leo.gettyimage.databinding.SplashFragmentBinding
 import com.leo.gettyimage.injection.scope.ActivityScoped
 import com.leo.gettyimage.util.ActivityUtil
-import kotlinx.android.synthetic.main.ble_scan_fragment.*
+import kotlinx.android.synthetic.main.splash_fragment.*
 import javax.inject.Inject
 
 @ActivityScoped
@@ -42,18 +42,9 @@ class SplashFragment @Inject constructor() : BaseFragment() {
 
     }
 
-    fun loadData() {
+    private fun loadData() {
         viewModel.loadCollections()
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        with(viewModel){
-            disposeElements()
-        }
-    }
-
-
 
     override fun initClickListener() {
 
@@ -67,7 +58,7 @@ class SplashFragment @Inject constructor() : BaseFragment() {
                     ActivityUtil.startMainActivity(activity!!)
                     activity!!.finish()
                 }else{
-                    showToast("데이타 가져오기 실패!")
+                    showToast("서버 연결에 실패 하였습니다. 네트워크 상태를 확인해 주세요.")
                     ActivityUtil.startMainActivity(activity!!)
                     activity!!.finish()
                 }

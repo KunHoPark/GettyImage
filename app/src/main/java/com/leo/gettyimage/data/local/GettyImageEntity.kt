@@ -30,14 +30,19 @@ data class GettyImageEntity(
         @ColumnInfo(name = "thumbnail_url") var thumbnailUrl: String,
 
         /**
+         *  Original image url
+         */
+        @ColumnInfo(name = "original_img_url") var originalImgUrl: String,
+
+        /**
          * Detail description.
          */
-        @ColumnInfo(name = "description") val description: String,
+        @ColumnInfo(name = "description") var description: String,
 
         /**
          * Reference count
          */
-        @ColumnInfo(name = "ref_count") val RefCount: String
+        @ColumnInfo(name = "ref_count") var refCount: String
 
 
 ) : Serializable

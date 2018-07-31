@@ -7,7 +7,7 @@ import com.leo.gettyimage.application.GettyImageApp
 import com.leo.gettyimage.callback.OnItemClickListener
 import com.leo.gettyimage.data.local.GettyImageEntity
 import com.leo.gettyimage.databinding.ItemGettyImageViewHolderBinding
-import com.leo.gettyimage.util.GlideImageUtils
+import com.leo.gettyimage.util.PicassoUtil
 
 class GettyImageBindingViewHolder(private var binding: ItemGettyImageViewHolderBinding, private val listener: OnItemClickListener?) : RecyclerView.ViewHolder(binding.root) {
     internal val tag = this.javaClass.simpleName
@@ -17,7 +17,7 @@ class GettyImageBindingViewHolder(private var binding: ItemGettyImageViewHolderB
         with(binding){
 
             this.setVariable(BR.gettyImageEntity, item)
-            GlideImageUtils.loadImage(GettyImageApp.applicationContext(), item.thumbnailUrl.toImageUrlForThumbnail() , ivThumbnail)
+            PicassoUtil.loadImage(GettyImageApp.applicationContext(), item.thumbnailUrl.toImageUrlForThumbnail() , ivThumbnail)
 
             listener?.let {
                 this.root.setOnClickListener {

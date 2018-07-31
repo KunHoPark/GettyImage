@@ -30,8 +30,10 @@ class GettyImageAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         listData?.let {
-            val item = it[position]
-            (holder as GettyImageBindingViewHolder).onBind(item, position, it.size)
+            if (it.size>position){
+                val item = it[position]
+                (holder as GettyImageBindingViewHolder).onBind(item, position, it.size)
+            }
         }
     }
 

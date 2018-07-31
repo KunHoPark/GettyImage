@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <import type="android.view.View"/>
+        <import type="java.lang.String" />
         <variable
             name="gettyImageEntity"
             type="com.leo.gettyimage.data.local.GettyImageEntity"/>
@@ -44,7 +45,7 @@
                 android:maxLines="2"
                 android:ellipsize="end"
                 style="@style/SH1_BM_01"
-                android:text="@{gettyImageEntity.id}"
+                android:text="@{String.valueOf(gettyImageEntity.imageIndex)}"
                 />
 
             <TextView

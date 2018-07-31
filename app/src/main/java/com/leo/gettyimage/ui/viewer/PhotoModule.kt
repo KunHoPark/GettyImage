@@ -1,7 +1,6 @@
 package com.leo.gettyimage.ui.viewer
 
 import com.leo.gettyimage.R
-import com.leo.gettyimage.data.repository.GettyImageRepository
 import com.leo.gettyimage.data.repository.ImageDetailRepository
 import com.leo.gettyimage.injection.scope.ActivityScoped
 import com.leo.gettyimage.injection.scope.FragmentScoped
@@ -18,15 +17,6 @@ abstract class PhotoModule {
 
     @Module
     companion object {
-
-//        @Provides
-//        @ActivityScoped
-//        @JvmStatic fun provideImageId(activity: PhotoActivity): String =
-//                activity.intent.extras?.run{
-//                    getString(activity.getString(R.string.intent_action_key_id))
-//                } ?: ""
-
-
         @Provides
         @ActivityScoped
         @JvmStatic fun provideViewModelFactory(activity: PhotoActivity, imageDetailRepository: ImageDetailRepository) : PhotoViewModelFactory {

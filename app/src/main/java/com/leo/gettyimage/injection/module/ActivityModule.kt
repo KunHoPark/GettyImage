@@ -1,8 +1,6 @@
 package com.leo.gettyimage.injection.module;
 
 import com.leo.gettyimage.injection.scope.ActivityScoped
-import com.leo.gettyimage.ui.ble.BleScanActivity
-import com.leo.gettyimage.ui.blescan.BleScanModule
 import com.leo.gettyimage.ui.main.MainActivity
 import com.leo.gettyimage.ui.main.MainModule
 import com.leo.gettyimage.ui.splash.SplashActivity
@@ -15,11 +13,6 @@ import dagger.android.ContributesAndroidInjector
 
 @Module
 abstract class ActivityModule {
-
-
-    @ActivityScoped
-    @ContributesAndroidInjector(modules = [(BleScanModule::class)])
-    abstract fun bleScanActivity(): BleScanActivity
 
     @ActivityScoped
     @ContributesAndroidInjector(modules = [(MainModule::class)])
